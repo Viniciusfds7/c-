@@ -19,7 +19,7 @@ string retornapalavraaleatoria (){
 
     cout << indicealeatorio;
 
-    system("pause");
+    //system("pause");
 
     //Exibe uma palavra aleatória
     return palavras[indicealeatorio];
@@ -59,10 +59,27 @@ void  exibestatus(string palavracommascara, int tamanhodapalavra, int tentativas
 }
 
 
-void jogasozinho(){
+int jogar(int numerodejogadores){
 
-    //palavra a ser adivinhada
-    string palavra = retornapalavraaleatoria();
+    //Palavra a ser adivinhada
+    string palavra;
+
+    //Confere o número de jogadores
+    if (numerodejogadores == 1){
+
+        //palavra a ser adivinhada
+        palavra = retornapalavraaleatoria();
+    }else {
+
+        cout << "\nDigite uma palavra:  ";
+        //palavra a ser adivinhada
+         cin >> palavra;
+
+    }
+
+
+
+
 
     //tamanho da palavra
     int tamanhodapalavra = palavra.size();
@@ -71,9 +88,10 @@ void jogasozinho(){
     string palavracommascara = retornapalavracommascara(palavra, tamanhodapalavra);
 
     ///Variáveis pricipais
-    int tentativas = 0, maximodetentativas = 7;       //números de tentativas
+    int tentativas = 0, maximodetentativas = 10;       //números de tentativas
     int cont = 0;                                    //auxiliar ocntadora
     char letra;                                      //letra arriscada
+    int opcao;                                       //Opçoes finais
     string letrasjaarriscadas;                       //acumula as tentativas do jogador
     string mensagem = "Bem vindo ao jogo!\n";          //Feed back Jogador
     bool jadigitouletra = false, acertouletra = false;                     //auxiliar para letra já digitada
@@ -103,9 +121,9 @@ void jogasozinho(){
                 jadigitouletra=true;
             }
         }
-
-        if (jadigitouletra==false){
-                letrasjaarriscadas += letra;
+            //Incrementa as letras já arriscadas
+            if (jadigitouletra==false){
+                letrasjaarriscadas += tolower (letra);
 
 
         //percorre a palavra real e se existir muda a palavra
@@ -114,7 +132,7 @@ void jogasozinho(){
 
 
             // Se a letra existir na palavra escondida
-            if(palavra[cont]==letra){
+            if(palavra[cont]== tolower(letra)){
 
                 //Faço a letra aparecer na palavra
                 palavracommascara[cont] = palavra[cont];
@@ -152,14 +170,27 @@ void jogasozinho(){
 if (palavra == palavracommascara){
 
     limpatela();
-    cout << "\nA palavra eh: " << palavra;
-    cout << "\n\n\nPARABENS!! VOCE VENCEU O MELHOR JOGO DO MUNDO. MUITO FELIZ POR VOCE. VOCE EH UM GENIO.\n\n\n";
-    system("pause");
+        cout << "\nA palavra eh: " << palavra;
+        cout << "\n\n\nPARABENS!! VOCE VENCEU O MELHOR JOGO DO MUNDO. MUITO FELIZ POR VOCE. VOCE EH UM GENIO.\n\n\n";
+        cout << "\n Deseja reiniciar?";
+        cout << "\n1 - Sim.";
+        cout << "\n2 - Nao.\n";
+        cin >> opcao;
+        return opcao;
+
+
+    //system("pause");
 } else {
+
     limpatela();
-    cout << "\nA palavra eh: " << palavra;
-    cout << "\n\n\nInfelizmente voce perdeu. Tente novamente.\n\n\n";
-    system("pause");
+        cout << "\nA palavra eh: " << palavra;
+        cout << "\n\n\nInfelizmente voce perdeu. Tente novamente.\n\n\n";
+        cout << "\n Deseja reiniciar?";
+        cout << "\n1 - Sim.";
+        cout << "\n2 - Nao.\n";
+        cin >> opcao;
+        return opcao;
+    //system("pause");
 }
 
 }
@@ -175,10 +206,11 @@ void menuinicial (){
     // Enquanto o valor não digita uma opcao valida, mostra o menu novamente
     while(opcao < 1 || opcao > 3){
     limpatela ();
-    cout << "\n\nBEM VINDO AO JOGO";
-    cout <<"\n1 - Jogar";
-    cout <<"\n2 - Sobre";
-    cout <<"\n3 - Sair";
+    cout << "\n\n---BEM VINDO AO JOGO DA FORCA---";
+    cout <<"\n  1 - Jogar Sozinho;";
+    cout <<"\n  2 - Jogar em Dupla;";
+    cout <<"\n  3 - Sobre;";
+    cout <<"\n  4 - Sair.";
     cout <<"\nEscolha uma opcao e tecle ENTER:";
 
 
@@ -189,15 +221,35 @@ void menuinicial (){
         case 1:
             //inicia o jogo
             cout << "\n\nJogo iniciado\n\n";
-            jogasozinho();
+            if (jogar(1)==1){
+                menuinicial();
+            };
             break;
 
-         case 2:
-             //informacoes do jogo
-            cout << "\n\nInformacoes do jogo\n\n";
+        case 2:
+            //inicia o jogo
+            cout << "\n\nJogo iniciado\n\n";
+            if (jogar(2)==1){
+                menuinicial();
+            };
             break;
 
          case 3:
+             //informacoes do jogo
+
+            cout << "\n\nInformacoes do jogo\n\n";
+            limpatela ();
+            cout << "\n\nJogo desenvolvido por Vinicius Ferraz da Silva em 23/01/2019\nTodo feito em linguagem c++, esse eh uma maneira mais eficaz de fixar o conhecimento adquirido nas aulas.";
+            cout << "\n\n1 - Voltar.";
+            cout << "\n2 - Sair.\n";
+            cin >> opcao;
+            if (opcao == 1) {
+                menuinicial();
+            }
+
+            break;
+
+         case 4:
              //até mais
             cout << "\n\nAte mais\n\n";
             break;
