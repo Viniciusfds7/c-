@@ -40,10 +40,11 @@ string retornapalavracommascara(string palavra, int tamanhodapalavra){
     return palavracommascara;
 }
 
-void  exibestatus(string palavracommascara, int tamanhodapalavra, int tentativasrestantes, string letrasjaarriscadas) {
+void  exibestatus(string palavracommascara, int tamanhodapalavra, int tentativasrestantes, string letrasjaarriscadas, string mensagem) {
 
     //cout << "A palavra secreta eh: "<< palavra << "(Tamanho: "<< tamanhodapalavra <<")\n\n" ;
-    cout << "Palavra "<< palavracommascara << "(Tamanho: "<< tamanhodapalavra <<")\n\n" ;
+    cout << mensagem;
+    cout << "\nPalavra "<< palavracommascara << "(Tamanho: "<< tamanhodapalavra <<")\n\n" ;
     cout << "\nTentativas restantes: " << tentativasrestantes << "\n\n\n";
 
 
@@ -74,16 +75,17 @@ void jogasozinho(){
     int cont = 0;                                    //auxiliar ocntadora
     char letra;                                      //letra arriscada
     string letrasjaarriscadas;                       //acumula as tentativas do jogador
-    bool jadigitouletra = false;                             //auxiliar para letra já digitada
+    string mensagem = "Bem vindo ao jogo!\n";          //Feed back Jogador
+    bool jadigitouletra = false, acertouletra = false;                     //auxiliar para letra já digitada
 
 
     while (palavra != palavracommascara && (maximodetentativas - tentativas) > 0) {
 
 
-        //limpatela();
+        limpatela();
 
         //exibe o status atual do jogo
-        exibestatus(palavracommascara,tamanhodapalavra, maximodetentativas - tentativas, letrasjaarriscadas);
+        exibestatus(palavracommascara,tamanhodapalavra, maximodetentativas - tentativas, letrasjaarriscadas, mensagem);
 
         //Palpites
         cout << "\nDigite uma letra: ";
@@ -96,7 +98,7 @@ void jogasozinho(){
             //Se encontra a letra
             if(letrasjaarriscadas[cont] == letra){
 
-                cout << "\nEssa letra já foi digitada.\n";
+                mensagem = "\nEssa letra ja foi digitada!\n";
                 //Indice com a variavel booleana
                 jadigitouletra=true;
             }
@@ -109,21 +111,39 @@ void jogasozinho(){
         //percorre a palavra real e se existir muda a palavra
         for(cont=0; cont<tamanhodapalavra; cont++){
 
+
+
             // Se a letra existir na palavra escondida
             if(palavra[cont]==letra){
 
                 //Faço a letra aparecer na palavra
                 palavracommascara[cont] = palavra[cont];
+
+
+                acertouletra = true;
             }
 
         }
 
-        //aumenta as tentativas
+
+
+        if (acertouletra == false ) {
+
+            mensagem = "\nVoce errou uma letra";
+        }else{
+
+            mensagem = "\nVoce acertou uma letra!\n";
+
+
+        }
+
+         //aumenta as tentativas
         tentativas++;
 
         }
 
-
+        jadigitouletra = false;
+        acertouletra = false;
 
 
 
@@ -132,10 +152,12 @@ void jogasozinho(){
 if (palavra == palavracommascara){
 
     limpatela();
+    cout << "\nA palavra eh: " << palavra;
     cout << "\n\n\nPARABENS!! VOCE VENCEU O MELHOR JOGO DO MUNDO. MUITO FELIZ POR VOCE. VOCE EH UM GENIO.\n\n\n";
     system("pause");
 } else {
     limpatela();
+    cout << "\nA palavra eh: " << palavra;
     cout << "\n\n\nInfelizmente voce perdeu. Tente novamente.\n\n\n";
     system("pause");
 }
