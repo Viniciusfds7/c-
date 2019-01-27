@@ -6,181 +6,245 @@
 
 using namespace std;
 
-void limpatela(){
+//Cabeçalhos de funções
+void menuInicial();
+
+void limpaTela(){
     system("CLS");
 }
 
-//
 
-void iniciatabuleiro(char tabuleiro [10][10], char mascara [10][10]){
 
-    int linha, coluna;         // Variáveis auxiliares
+void iniciaTabuleiro(char tabuleiro[10][10], char mascara[10][10]){
 
-    //Popula o tabuleiro com água
-    for(linha = 0; linha < 10 ; linha ++){
-        for (coluna = 0 ; coluna < 10 ; coluna++){
+     //Popula o tabuleiro com Água
+    int linha,coluna;
+    for(linha = 0; linha < 10; linha++){
+         for(coluna = 0; coluna < 10; coluna++){
             tabuleiro[linha][coluna] = 'A';
             mascara[linha][coluna] = '*';
-        }
+         }
     }
+}
+
+void exibeMapa(){
+    //Mapa indicador de colunas
+    int cont;
+    for(cont = 0; cont < 10; cont++){
+        if(cont == 0){
+            cout << "     ";
+        }
+        cout << cont << " ";
+    }
+    cout << "\n";
+    for(cont = 0; cont < 10; cont++){
+        if(cont == 0){
+            cout << "     ";
+        }
+        cout << "| ";
+    }
+    cout << "\n";
 
 }
 
-//
+void exibeTabuleiro(char tabuleiro[10][10], char mascara[10][10], bool mostraGabarito){
 
 
-void exibetabuleiro (char tabuleiro [10][10], char mascara [10][10]){
+    char blue[] = { 0x1b, '[', '1', ';', '3', '4', 'm', 0 };
+    char green[] = { 0x1b, '[', '1', ';', '3', '2', 'm', 0 };
+    char normal[] = { 0x1b, '[', '1', ';', '3', '9', 'm', 0 };
 
-    int linha, coluna;         // Variáveis auxiliares
+    //Exibe o tabuleiro
+    int linha,coluna;
+    for(linha = 0; linha < 10; linha++){
+         cout << linha << " - ";
+         for(coluna = 0; coluna < 10; coluna++){
 
+            switch(mascara[linha][coluna]){
+                case 'A':
+                    cout << blue << " " <<mascara[linha][coluna] << normal;
+                    break;
+                case 'P':
+                    cout << green << " " <<mascara[linha][coluna] << normal;
+                    break;
+                default:
+                    cout << " " <<mascara[linha][coluna];
+                    break;
+            }
 
-    for(linha = 0; linha < 10 ; linha ++){
-        for (coluna = 0 ; coluna < 10 ; coluna++){
-            cout << " " << mascara[linha][coluna];
-        }
-        cout << "\n";
+         }
+         cout << "\n";
     }
 
-    for(linha = 0; linha < 10; linha++){
+    if(mostraGabarito == true){
+        for(linha = 0; linha < 10; linha++){
              for(coluna = 0; coluna < 10; coluna++){
                  cout << " " <<tabuleiro[linha][coluna];
              }
              cout << "\n";
         }
-
-
+    }
 
 
 }
 
-//
-
-
-void posicionabarcos(char tabuleiro [10][10]){
-
+void posicionaBarcos(char tabuleiro[10][10]){
 
     //Coloca 10 barcos no tabuleiro
-    int cont, quantidade = 10, quantidadeposicionada = 0;
+    int cont, quantidade = 10, quantidadePosicionada = 0;
 
+    //Verifica se já posicionou todos os barcos
+    while(quantidadePosicionada < quantidade){
 
-    //verifica se já posicionou os barcos
-    while (quantidadeposicionada < quantidade){
+        int linhaAleatoria = rand() % 10;  //Gera número aleatório de 0 a 9
+        int colunaAleatoria = rand() % 10; //Gera número aleatório de 0 a 9
 
-        for (cont = 0 ; cont < quantidade;cont++){
+        if(tabuleiro[linhaAleatoria][colunaAleatoria] == 'A'){
 
-            int linhaaleatoria = rand() % 10;     //Gera número aleatóio
-            int colunaaleatoria = rand() % 10;
+            //Posiciona 10 barcos aleatoriamente
+            tabuleiro[linhaAleatoria][colunaAleatoria] = 'P';
 
-        if (tabuleiro [linhaaleatoria][colunaaleatoria] == 'A'){
-            //posiciona barcos aleatóriamente
-            tabuleiro[linhaaleatoria][colunaaleatoria] = 'B';
+            //Aumenta o contador de barcos posicionados
+            quantidadePosicionada++;
 
-            //aumenta contador de barcos posicionados
-            quantidadeposicionada++;
-        }
+         }
+
     }
+
 }
+
+void verificaTiro(char tabuleiro[10][10], int linhaJogada, int colunaJogada, int *pontos, string *mensagem){
+
+    //Verifica quantos pontos adicionar
+    switch(tabuleiro[linhaJogada][colunaJogada]){
+        case 'P':
+            *pontos = *pontos + 10;
+            *mensagem = "Voce acertou um barco pequeno! (10 pts)";
+            break;
+        case 'A':
+            *mensagem = "Voce acertou a agua";
+            break;
+    }
+
 }
 
-
-//
-
-void jogo () {
+void jogo(string nomeDoJogador){
 
     ///Variáveis Gerais
-    char tabuleiro [10][10], mascara [10][10];       // Tabuleiro do Jogo
-    int linha, coluna;                               // Variáveis auxiliares
-    int linhajogada, colunajogada;                   // posição escolhida pelo usuário
-    int estadodejogo = 1;                            // 1 = jogo acontecendo 0 = fim de jogo
+    char tabuleiro[10][10],mascara[10][10];             //Tabuleiro do Jogo
+    int linha,coluna;                                   //Auxiliares de navegação
+    int linhaJogada, colunaJogada;                      //Posicao escolhida pelo jogador
+    int estadoDeJogo = 1;                               //1 = Jogo Acontecendo, 0 = Fim de Jogo
+    int pontos = 0;                                     //Pontuação do Jogador
+    int tentativas = 0, maximoDeTentativas = 10;         //Tentativas do jogador
+    int opcao;                                          //Opções de fim de jogo
+    string mensagem = "Bem vindo ao jogo!";             //Mensagem de feedback para o jogador
 
+    //Inicia o tabuleiro com água
+    iniciaTabuleiro(tabuleiro,mascara);
 
+    //Posiciona barcos aleatoriamente
+    posicionaBarcos(tabuleiro);
 
-    //Inicia o Tabuleiro com agua
-    iniciatabuleiro(tabuleiro, mascara);
+    while(tentativas < maximoDeTentativas){
 
-    //posiciona barcos aleatoriamente
-    posicionabarcos(tabuleiro);
+        limpaTela();
 
+        //Exibe o mapa de indicações
+        exibeMapa();
 
+        //Exibe tabuleiro
+        exibeTabuleiro(tabuleiro,mascara, false);
 
+        cout << "\nPontos:" << pontos << ", Tentativas Restantes:" << maximoDeTentativas - tentativas;
+        cout << "\n" << mensagem;
 
-    while (estadodejogo == 1){
+        //Verificação de dados
+        linhaJogada = -1;
+        colunaJogada = -1;
 
-        limpatela();
+        while( (linhaJogada < 0 || colunaJogada < 0) ||  (linhaJogada > 9 || colunaJogada > 9)) {
 
-        //limpa tela
-        cout << "\n\n\n";
-        //exibe tabuleiro
-        exibetabuleiro(tabuleiro,mascara);
+            cout << "\n" << nomeDoJogador << ", digite uma linha:";
+            cin >> linhaJogada;
+            cout <<  "\n" << nomeDoJogador << ", digite uma coluna:";
+            cin >> colunaJogada;
 
-        cout << "\nDigite uma linha: ";
-        cin >> linhajogada;
-        cout << "\nDigite uma coluna: ";
-        cin >> colunajogada;
+        }
 
-        //revela o tabuleiro
-        mascara[linhajogada-1][colunajogada-1] = tabuleiro[linhajogada][colunajogada];
+        //Verifica o que aconteceu
+        verificaTiro(tabuleiro, linhaJogada, colunaJogada, &pontos, &mensagem);
+
+        //Reveka o que está no tabuleiro
+        mascara[linhaJogada][colunaJogada] = tabuleiro[linhaJogada][colunaJogada];
+
+        tentativas++;
+
     }
+
+    cout << "Fim de jogo, o que deseja fazer?";
+    cout << "\n1-Jogar Novamente";
+    cout << "\n2-Ir para o Menu";
+    cout << "\n3-Sair";
+    cin >> opcao;
+    switch(opcao){
+        case 1:
+            jogo(nomeDoJogador);
+            break;
+        case 2:
+            menuInicial();
+            break;
+           }
+
 }
 
-//
+void menuInicial(){
 
-
-
-void menuinicial(){
-
-    //opçao escolhida pelo usuário
+    //Opção escolhida pelo usuário
     int opcao = 0;
 
-     //Enquanto o jogadro não digita um valor valido ele repete o menu
-    while (opcao < 1 || opcao >3){
+    //Nome do usuário
+    string nomeDoJogador;
 
-        limpatela ();
-        cout << "\n\n---BEM VINDO AO JOGO DE BATALHA NAVAL---";
-        cout <<"\n  1 - Jogar;";
-        cout <<"\n  2 - Sobre;";
-        cout <<"\n  3 - Sair.";
-        cout <<"\n ESOLHA UMA OPCAO E TECLE ENTER: ";
+    //Enquanto o jogador não digita uma opcao válida, mostra o menu novamente
+    while(opcao < 1 || opcao > 3){
+        limpaTela();
+        cout << "\n\n\nBem vindo ao Jogo de Batalha Naval";
+        cout << "\n1 - Jogar";
+        cout << "\n2 - Sobre";
+        cout << "\n3 - Sair";
+        cout << "\nEscolha uma opcao e tecle ENTER:";
+
+        //Faz a leitura da opcao
         cin >> opcao;
 
-            switch (opcao){
-
-                case 1:
-                    limpatela ();
-                    //Inicia o Jogo
-                   // cout << "\n Jogo inicado.\n\n\n";
-                   jogo();
-
-
+        //Faz algo de acordo com a opcao escolhida
+        switch(opcao){
+            case 1:
+                //Inicia o jogo
+                //cout << "Jogo iniciado";
+                cout << "Qual seu nome?";
+                cin >> nomeDoJogador;
+                jogo(nomeDoJogador);
                 break;
-
-                case 2:
-                    limpatela ();
-                    //Informacoes do jogo
-                    cout << "\n Informacoes do jogo.\n\n\n";
+            case 2:
+                //Mostra informacoes do Jogo
+                cout << "Informacoes do jogo:";
+                cout << "\n\nJogo desenvolvido por Vinicius Ferraz da Silva em 27/01/2019\nTodo feito em linguagem c++, esse eh uma maneira mais eficaz de fixar o conhecimento adquirido nas aulas.";
                 break;
-
-                case 3:
-                    limpatela ();
-                    //Sai do jogo
-                    cout << "\n Ate mais!\n\n\n";
+            case 3:
+                cout << "Ate mais!";
                 break;
-            }
+        }
     }
+
 }
-
-//
-
 
 int main(){
 
-    srand((unsigned) time(NULL));
+    //Para gerar números realmente aleatórios
+    srand((unsigned)time(NULL));
 
-    menuinicial();
-
-
-
-
-    //system("\n\npause");
+    menuInicial();
     return 0;
 }
