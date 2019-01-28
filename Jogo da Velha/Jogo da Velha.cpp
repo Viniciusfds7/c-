@@ -45,15 +45,42 @@ void jogo(){
      ///Variáveis Gerais
       char tabuleiro[3][3];                                       //Tabuleiro do Jogo
       int linha,coluna;                                           //Auxiliares para tabuleiro
+      int linhaJogada, colunaJogada;                              //posição que o jogador posiciona a marca
+      int estadoDeJogo = 1;                                           // 0 = sem jogo.  1 = em jogo
+      int tunoDoJogador = 1;                                      // 1 - x, 2 = o
 
       //Coloca os "-" no tabuleiro
       iniciaTabuleiro(tabuleiro);
 
-    cout << "\n\n";
-      exibeTabuleiro (tabuleiro);
-     cout << "\n\n";
+    while (estadoDeJogo = 1){
+
+    limpaTela()
+
+        cout << "\n\n";
+        exibeTabuleiro (tabuleiro);
+        cout << "\nJogador, digite uma linha: ";
+        cin >> linhaJogada;
+        cout << "\nJogador, digite uma coluna: ";
+        cin >> colunaJogada;
 
 
+
+        if (tunoDoJogador ==1){
+
+            tabuleiro [linhaJogada][colunaJogada] = 'x';
+
+            tunoDoJogador = 2;
+
+        }else{
+
+            tabuleiro [linhaJogada][colunaJogada] = 'o';
+
+            tunoDoJogador = 1;
+
+        }
+
+        cout << "\n\n";
+}
 }
 
 

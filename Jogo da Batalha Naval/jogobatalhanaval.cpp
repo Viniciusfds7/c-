@@ -154,7 +154,7 @@ void jogo(string nomeDoJogador){
         exibeMapa();
 
         //Exibe tabuleiro
-        exibeTabuleiro(tabuleiro,mascara, false);
+        exibeTabuleiro(tabuleiro,mascara, true);
 
         cout << "\nPontos:" << pontos << ", Tentativas Restantes:" << maximoDeTentativas - tentativas;
         cout << "\n" << mensagem;
@@ -242,7 +242,7 @@ void menuInicial(){
 
 int main(){
 
-    //Para gerar números realmente aleatórios
+    //Para gerar números re5996-1619-4400-4177-2918-7571almente aleatórios
     srand((unsigned)time(NULL));
 
     menuInicial();
